@@ -17,8 +17,20 @@ def max_heapify(arr, i):
 def create_max_heap(arr):
     for i in range(1, len(arr) // 2):
         max_heapify(arr, i)
+    return arr[1:]
+
+
+def del_ele(arr, ind):
+    arr[ind] = float('inf')
+    for i in range(1, len(arr) // 2):
+        max_heapify(arr, i)
+    # print(arr)
+    for i in range(2, len(arr) // 2):
+        max_heapify(arr, i)
+    return arr[2:]
 
 
 arr = ['Na', 50, 6, 8, 9, 10]
-create_max_heap(arr)
-print(arr)
+arr.append(5)
+print(create_max_heap(arr))
+print(del_ele(arr, 2))
