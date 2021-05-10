@@ -2,28 +2,30 @@
 # return the kth smallest element in the matrix.
 # Note that it is the kth smallest element in the sorted order, not the kth distinct element.
 import heapq
+def kthSmallest(mat: list[list[int]], k: int) -> int:
+    m, n = len(mat), len(mat[0])
+    smallest = sum(mat[i][0] for i in range(m))
+    seen = set()
+    hp = [(smallest, [0] * m)]
+    k -= 1
 
+    while hp:
+        total, idx = heapq.heappop(hp)
+        if not k:
+            return total
 
-def kthSmallest(self, matrix: list[list[int]], k: int) -> int:
-    min_heap = []
-    res = []
-    heapq.heapify(min_heap)
-    present = set([])
-    heapq.heapify(min_heap)
-    while True:
-        if not min_heap:
-            heapq.heappush(min_heap, ((matrix[0][0]), 0, 0))
-        else:
-            sm, i, j = heapq.heappop(min_heap)
-            res.append(sm)
-            k -= 1
-            if k == 0:
-                break
+        k -= 1
+        for i in range(m):
+            col = idx[i]
+            if col == n - 1: continue
 
-            if j + 1 < len(matrix[i]) and (i, j + 1) not in present:
-                heapq.heappush(min_heap, ((matrix[i][j + 1]), i, j + 1))
-                present.add((i, j + 1))
-            if i + 1 < len(matrix) and (i + 1, j) not in present:
-                heapq.heappush(min_heap, ((matrix[i + 1][j]), i + 1, j))
-                present.add((i + 1, j))
-    return res[-1]
+            c_total, c_idx = total, idx[:]
+            c_total -= mat[i][col]
+            c_total += mat[i][col + 1]
+            c_idx[i] = col + 1
+
+            if tuple(c_idx) in seen: continue
+            heapq.heappush(hp, (c_total, c_idx))
+            seen.add(tuple(c_idx))
+
+    return -1
